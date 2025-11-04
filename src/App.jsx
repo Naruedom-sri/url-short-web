@@ -39,27 +39,23 @@ export default function App() {
     if (!longUrl) return;
 
     try {
-      const proxyUrl = "https://api.allorigins.win/get?url=";
-      const targetUrl = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(
-        longUrl
-      )}`;
-
-      const res = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+      const res = await fetch(
+        `/.netlify/shorten?url=${encodeURIComponent(longUrl)}`
+      );
       const data = await res.json();
-      const shortLink = data.contents.trim();
 
-      if (shortLink.startsWith("http")) {
-        const newEntry = { longUrl, shortUrl: shortLink };
+      if (data.shortUrl && data.shortUrl.startsWith("http")) {
+        const newEntry = { longUrl, shortUrl: data.shortUrl };
         const updated = [newEntry, ...history];
         setHistory(updated);
         localStorage.setItem("history", JSON.stringify(updated));
-        setShortUrl(shortLink);
+        setShortUrl(data.shortUrl);
       } else {
-        alert("Failed to generate a short link. Please try again.");
+        alert("Failed to generate short link. Please try again.");
       }
     } catch (error) {
-      console.error("Error occurred:", error);
-      alert("Unable to connect to the API. Please try again later.");
+      console.error("Error:", error);
+      alert("Unable to connect to shortening service.");
     }
   };
 
