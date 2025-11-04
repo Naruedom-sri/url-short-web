@@ -40,7 +40,7 @@ export default function App() {
 
     try {
       const res = await fetch(
-        `/.netlify/shorten?url=${encodeURIComponent(longUrl)}`
+        `/.netlify/functions/shorten?url=${encodeURIComponent(longUrl)}`
       );
       const data = await res.json();
 
